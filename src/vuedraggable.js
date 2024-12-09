@@ -10,6 +10,8 @@ import { computeComponentStructure } from "./core/renderHelper";
 import { events } from "./core/sortableEvents";
 import { h, defineComponent, nextTick } from "vue";
 
+const componentMap = new WeakMap();
+
 function emit(evtName, evtData) {
   nextTick(() => this.$emit(evtName.toLowerCase(), evtData));
 }
@@ -135,7 +137,9 @@ const draggableComponent = defineComponent({
     const targetDomElement = $el.nodeType === 1 ? $el : $el.parentElement;
     this._sortable = new Sortable(targetDomElement, sortableOptions);
     this.targetDomElement = targetDomElement;
-    targetDomElement.__draggable_component__ = this;
+
+    // Au lieu de targetDomElement.__draggable_component__ = this;
+    componentMap.set(targetDomElement, this);
   },
 
   updated() {
@@ -144,6 +148,9 @@ const draggableComponent = defineComponent({
 
   beforeUnmount() {
     if (this._sortable !== undefined) this._sortable.destroy();
+    if (this.targetDomElement) {
+      componentMap.delete(this.targetDomElement);
+    }
   },
 
   computed: {
@@ -180,8 +187,7 @@ const draggableComponent = defineComponent({
     },
 
     getUnderlyingPotencialDraggableComponent(htmElement) {
-      //TODO check case where you need to see component children
-      return htmElement.__draggable_component__;
+      return componentMap.get(htmElement);
     },
 
     emitChanges(evt) {
