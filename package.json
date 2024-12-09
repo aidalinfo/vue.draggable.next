@@ -3,7 +3,7 @@
   "version": "4.1.0",
   "description": "draggable component for vue",
   "license": "MIT",
-  "main": "dist/vuedraggable.umd.min.js",
+  "main": "src/vuedraggable.js",
   "types": "types/vuedraggable.d.ts",
   "repository": {
     "type": "git",
@@ -96,5 +96,5 @@
     "types/*",
     "src/*"
   ],
-  "module": "dist/vuedraggable.umd.js"
+  "module": "src/vuedraggable.js"
 }
